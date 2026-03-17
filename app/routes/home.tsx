@@ -1,11 +1,5 @@
-import type { Route } from "./+types/home";
-
-export function meta({ }: Route.MetaArgs) {
-  return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
-  ];
-}
+import { Form } from "react-router";
+import { useState } from "react";
 
 export const loader = async () => {
   const data = await fetch(
@@ -15,34 +9,40 @@ export const loader = async () => {
 };
 
 const Home = ({ loaderData }: { loaderData: { meals: any[] } }) => {
-  const { meals } = loaderData;
+  const [meals, setMeals] = useState(loaderData.meals);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchTerm.trim()) return;
+    const data = await fetch(
+      `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchTerm}`
+    ).then((res) => res.json());
+    setMeals(data.meals || []);
+  };
 
   return (
     <div>
-
-      <h2>Meals List</h2>
+      <Form onSubmit={handleSearch}>
+        <input
+          name="q"
+          type="search"
+          placeholder="Search for a meal"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <button type="submit">Search</button>
+      </Form>
 
       {meals.length === 0 ? (
-        <p>Loading...</p>
+        <p>No meals found.</p>
       ) : (
         <ul>
           {meals.map((meal) => (
-            <li key={meal.idMeal} className="meal-card">
+            <li key={meal.idMeal}>
               <h3>{meal.strMeal}</h3>
               <img src={meal.strMealThumb} alt={meal.strMeal} width={200} />
-              <p><strong>Category:</strong> {meal.strCategory}</p>
-              <p><strong>Area:</strong> {meal.strArea}</p>
-              <p><strong>Instructions:</strong> {meal.strInstructions}</p>
-
-              <ul>
-                {Array.from({ length: 20 }, (_, i) => {
-                  const ingredient = meal[`strIngredient${i + 1}`];
-                  const measure = meal[`strMeasure${i + 1}`];
-                  return ingredient?.trim() ? (
-                    <li key={i}>{ingredient} - {measure}</li>
-                  ) : null;
-                })}
-              </ul>
+              <p>{meal.strCategory}</p>
             </li>
           ))}
         </ul>
