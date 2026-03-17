@@ -1,3 +1,4 @@
+import { Link, useLoaderData } from "react-router";
 import type { Route } from "./+types/home";
 
 export function meta({ }: Route.MetaArgs) {
@@ -8,31 +9,42 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export const loader = async () => {
-  const data = await fetch(
+  const catData = await fetch(
+    "https://www.themealdb.com/api/json/v1/1/categories.php"
+  ).then((res) => res.json());
+
+  const mealData = await fetch(
     "https://www.themealdb.com/api/json/v1/1/search.php?s=chicken"
   ).then((res) => res.json());
-  return { meals: data.meals || [] };
+
+  return {
+    categories: catData.categories || [],
+    meals: mealData.meals || []
+  };
 };
 
-const Home = ({ loaderData }: { loaderData: { meals: any[] } }) => {
-  const { meals } = loaderData;
+export default function Home() {
+  const { categories, meals } = useLoaderData<typeof loader>();
 
   return (
-    <div>
+    <div style={{ padding: "10px", fontFamily: "sans-serif" }}>
 
-      <h2>Meals List</h2>
+      <div style={{ background: "#eee", padding: "10px", borderRadius: "5px", gap: "25px", display: "flex", flexWrap: "wrap" }}>
+        <strong>Categorieën: </strong>
+        {categories.map((cat: any) => (
+          <Link key={cat.idCategory} to={`/category/${cat.strCategory}`} style={{ marginRight: "10px" }}>
+            {cat.strCategory}
+          </Link>
+        ))}
+      </div>
 
-      {meals.length === 0 ? (
-        <p>Loading...</p>
-      ) : (
+      <section>
+        <h2>Meals List</h2>
         <ul>
-          {meals.map((meal) => (
+          {meals.map((meal: any) => (
             <li key={meal.idMeal} className="meal-card">
               <h3>{meal.strMeal}</h3>
-              <img src={meal.strMealThumb} alt={meal.strMeal} width={200} />
-              <p><strong>Category:</strong> {meal.strCategory}</p>
-              <p><strong>Area:</strong> {meal.strArea}</p>
-              <p><strong>Instructions:</strong> {meal.strInstructions}</p>
+              <img src={meal.strMealThumb} alt={meal.strMeal} width={200} /> 
 
               <ul>
                 {Array.from({ length: 20 }, (_, i) => {
@@ -46,9 +58,7 @@ const Home = ({ loaderData }: { loaderData: { meals: any[] } }) => {
             </li>
           ))}
         </ul>
-      )}
+      </section>
     </div>
   );
-};
-
-export default Home;
+}
