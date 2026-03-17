@@ -3,8 +3,8 @@ import type { Route } from "./+types/home";
 
 export function meta({ }: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Recepten App" },
+    { name: "description", content: "Ontdek heerlijke recepten!" },
   ];
 }
 
@@ -40,24 +40,16 @@ export default function Home() {
 
       <section>
         <h2>Meals List</h2>
-        <ul>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", listStyle: "none", padding: 0 }}>
           {meals.map((meal: any) => (
-            <li key={meal.idMeal} className="meal-card">
-              <h3>{meal.strMeal}</h3>
-              <img src={meal.strMealThumb} alt={meal.strMeal} width={200} /> 
-
-              <ul>
-                {Array.from({ length: 20 }, (_, i) => {
-                  const ingredient = meal[`strIngredient${i + 1}`];
-                  const measure = meal[`strMeasure${i + 1}`];
-                  return ingredient?.trim() ? (
-                    <li key={i}>{ingredient} - {measure}</li>
-                  ) : null;
-                })}
-              </ul>
-            </li>
+            <div key={meal.idMeal} style={{ width: "200px" }}>
+              <Link to={`/meal/${meal.idMeal}`} style={{ textDecoration: "none", color: "inherit" }}>
+                <img src={meal.strMealThumb} alt={meal.strMeal} width="100%" style={{ borderRadius: "8px" }} />
+                <h3 style={{ fontSize: "1rem" }}>{meal.strMeal}</h3>
+              </Link>
+            </div>
           ))}
-        </ul>
+        </div>
       </section>
     </div>
   );

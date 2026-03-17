@@ -1,5 +1,6 @@
-import { Link, useLoaderData, useParams } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import type { Route } from "./+types/categorie";
+
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
     const { categoryName } = params;
@@ -27,8 +28,15 @@ export default function CategoryPage() {
             }}>
                 {meals.map((meal: any) => (
                     <div key={meal.idMeal} style={{ border: "1px solid #eee", padding: "10px", borderRadius: "8px" }}>
-                        <img src={meal.strMealThumb} alt={meal.strMeal} style={{ width: "100%", borderRadius: "4px" }} />
-                        <h4>{meal.strMeal}</h4>
+                        <Link to={`/meal/${meal.idMeal}`} style={{ textDecoration: "none", color: "inherit" }}>
+                            <img
+                                src={meal.strMealThumb}
+                                alt={meal.strMeal}
+                                style={{ width: "100%", borderRadius: "4px" }}
+                            />
+                            <h4>{meal.strMeal}</h4>
+                        </Link>
+
                     </div>
                 ))}
             </div>
