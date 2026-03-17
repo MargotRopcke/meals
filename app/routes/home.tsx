@@ -10,4 +10,5 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   return <Welcome />;
+  <h1>test</h1>
 }
