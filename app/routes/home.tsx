@@ -40,7 +40,6 @@ export default function Home() {
 
   return (
     <div style={{ padding: "10px", fontFamily: "sans-serif" }}>
-      {/* Categories */}
       <div
         style={{
           background: "#eee",
@@ -63,7 +62,6 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Search Form */}
       <Form onSubmit={handleSearch} style={{ margin: "15px 0" }}>
         <input
           name="q"
@@ -75,7 +73,6 @@ export default function Home() {
         <button type="submit">Search</button>
       </Form>
 
-      {/* Meals List */}
       <section>
         <h2>Meals List</h2>
         <div
